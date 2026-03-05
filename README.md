@@ -5,11 +5,11 @@ https://en.wikipedia.org/wiki/Unit_vector
 This proposed method is able to convert a unit vector, usually composed of 3 floating point numbers (x,y,z) for a total size of 4x3x8=96bit, into a 16-bit number, with a perfect homogeneous radial distribution.
 
 ### Coordinate system
-Before describing the method it is necessary to define a reference system that I used for my directx11 graphics engine: left handles coordinate system. The method can be used for any reference system.
+At first it's necessary to define a reference system used for example in directx11: left handles coordinate system. The method can be used for any reference system.
 
 ![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/coord.jpg)
 
-This function converts any vector to polar coordinates.
+This function converts a unit vector to polar coordinates.
 ```c#
 static (float theta, float phi) spherical(Vector3f cartesian);
 ```
