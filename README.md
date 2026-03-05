@@ -15,7 +15,7 @@ I'll leave the article reading for any further information.
 Since the aim is to use the Directx, it is necessary to define some basic math for left-handed coordinate system.
 
 
-C#
+```C#
 public struct Vector3f
 {
    public float x, y, z;
