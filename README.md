@@ -83,20 +83,22 @@ with i and j in [0,N] range
 
 However, as written in the article, we will obtain a high density towards the Y pole. To improve the homogeneity of the distribution of the quantized vectors, I have chosen to vary the theta angle respect to phi. Considering that for phi=0, we have a division by zero, but any angle of theta is admissible, we will write:
 
-C#
+```C#
 float phi = i * d_phi;
 float theta = i > 0 ? (j/i * π/2) : 0;
+```
+
 Now the problem is to store these two indices i and j in a 13-bit number, because 3-bit are reserved for the sign.
 
-Table [i,j]
+### Table [i,j]
 If we construct a table with rows i, columns j and a progressive number for this sequence:
 
-C#
+```C#
 int n = 0;
 for (byte i = 0; i <= N; i++)
     for (int j = 0; j <= i; j++)
         i_tab[n++] = i;
-
+```
 
 We have a simple sequence, see also https://en.wikipedia.org/wiki/Triangular_number.
 
@@ -104,8 +106,9 @@ Using the formula n = (i+3)*i/2 ( or n=(i+1)*i/2+i ), we can calculate the maxim
 
 With N=126 subdivision for both i and j, the table generates 8128 points, and luckily with a 13bit number, we can encode a number from 0 to 8191.
 
-Encoding
-C#
+### Encoding
+
+```C#
 static int sum(int i) => (i + 1) * i / 2;
 
 public static ushort Encode(Vector3f normal)
@@ -130,17 +133,21 @@ public static ushort Encode(Vector3f normal)
 
    return value;
 }
+```
 
 ### Decoding
 To reverse the calculation, we first need to get the i and j indices back from the 13bit value. We can use two methods:
 
 Using the precalculated table but require to store a byte[8128] table:
-C#
+
+```C#
 int i = i_tab[value];
 int j = value - sum(i);
+```
+
 Using the inverse function. These formulas can be used for example in a HLSL Shader code. Currently, the sqrt function doesn't impact performance at all (comparing to older graphics architectures). However, they must be checked for each value because it is possible that the precision of the floats can give different values.
 
-C#
+```C#
 static void inverse(int n, out int i, out int j)
 {
    //check for n[0,8127]
@@ -167,11 +174,12 @@ static void inverse_aprox2(int n, out int i, out int j)
    j = n - sum(i);
    if (j < 0) { j += i; i--; }
 }
+```
 
 ### HLSL shader code
 tested with directx11, but I don't know now to measure the performance
 
-C++
+```C++
 float3 DecodeUnitVector16(min16uint encode)
 {
     int n = encode & 0x1FFF;
@@ -189,17 +197,20 @@ float3 DecodeUnitVector16(min16uint encode)
     
     return normal;
 }
+```
 
 ### Result
 If we create all possible values with this code, we obtain a dense and homogeneous distribution of unit vectors, for a total of 65.024 possible points, as shown in the image.
 
-C#
+```C#
 for (int sign = 0; sign < 8; sign++)
     for (int n = 0; n <= 8127; n++)
     {
         int code = n | sign << 13;
         Vertices.Add(Decode((ushort)code));
     }
+```
+
 Any comments or suggestions to improve the code are welcome.
 
 
@@ -212,7 +223,7 @@ The extension to 32bit doesn't make sense also because I encounter memory overfl
 ### Performance
 The bottleneck is due to the trigonometric functions. A doubling of the speed is obtained by replacing the standard functions with approximations (which are under testing):
 
-C#
+```C#
 /// <summary>
 /// Bhāskara I's sin
 /// </summary>
@@ -245,3 +256,4 @@ static float AcosSL(float x)
     z = (float)((-0.168577f * z + 1.56723f) * Math.Sqrt(1 - z));
     return x < 0 ? z + Mathelp.PI : -z;
 }
+```
