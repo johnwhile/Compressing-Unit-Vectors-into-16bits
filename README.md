@@ -7,7 +7,7 @@ This proposed method is able to convert a unit vector, usually composed of 3 flo
 ### Coordinate system
 Before describing the method it is necessary to define a reference system that I used for my directx11 graphics engine: left handles coordinate system. The method can be used for any reference system.
 
-![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/coord.jpg | width=100)
+![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/coord.jpg)
 
 This function converts any vector to polar coordinates.
 ```c#
