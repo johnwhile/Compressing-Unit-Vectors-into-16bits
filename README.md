@@ -14,7 +14,6 @@ I'll leave the article reading for any further information.
 
 Since the aim is to use the Directx, it is necessary to define some basic math for left-handed coordinate system.
 
-
 ```C#
 public struct Vector3f
 {
@@ -29,10 +28,11 @@ public struct Vector3f
       return length;
    }
 }
+```
 
 Convert a polar vector to unit vector and vice-versa. In the cartesian to spherical, we must consider that we work only with normal vectors and we must be sure that there are no divisions by zero.
 
-C#
+```C#
 public static Vector3f SphericalToCartesian(float r, float theta, float phi)
 {
    return new Vector3f(
@@ -53,24 +53,32 @@ public static (float r, float theta, float phi) CartesianToSpherical(Vector3f ca
    float phi = (float)Math.Acos(cartesian.y);
    return (r, theta, phi);
 }
-Unit Vector Quantization
+```
+
+### Unit Vector Quantization
 To reduce the complexity, I decided to simplify the problem for positive Cartesian coordinates only, storing the sign of the normal in the first 3 bits (we are working in little endian).
 
-C#
+```C#
 ushort value = 0;
 if (normal.x < 0) { value |= 1 << 15; normal.x *= -1; }
 if (normal.y < 0) { value |= 1 << 14; normal.y *= -1; }
 if (normal.z < 0) { value |= 1 << 13; normal.z *= -1; }
+```
+
 In this way, the phi and theta angles lies in [0,π/2] range. To quantize the angles, you can simply select a subdivision of your choice, for example, for N subdivisions, we would get:
 
-C#
+```C#
 d_phi = π/2 / N
 d_theta = π/2 / N
+```
+
 so the angles can be represented by an index i and j where:
 
-C#
+```C#
 phi = d_phi * i 
 theta = d_theta * j
+```
+
 with i and j in [0,N] range
 
 However, as written in the article, we will obtain a high density towards the Y pole. To improve the homogeneity of the distribution of the quantized vectors, I have chosen to vary the theta angle respect to phi. Considering that for phi=0, we have a division by zero, but any angle of theta is admissible, we will write:
