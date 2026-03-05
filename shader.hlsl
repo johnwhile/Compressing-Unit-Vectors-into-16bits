@@ -1,3 +1,5 @@
+// Directx 11 HLSL shader code
+
 float3 DecodeUnitVector16(min16uint encode)
 {
     int n = encode & 0x1FFF;
