@@ -1,32 +1,18 @@
 # 16-Bit Spherical Coordinate Compression Methods using Discrete Spherical Coordinates (DSC).
 
-Unit vectors is a vector with a magnitude (length) of exactly 1, used primarily to indicate direction without contributing to the magnitude of a scalar quantity. They are widely used in 3D graphics normal, tangents, etc...
-https://en.wikipedia.org/wiki/Unit_vector
-This proposed method is able to convert a unit vector, usually composed of 3 floating point numbers (x,y,z) for a total size of 4x3x8=96bit, into a 16-bit number, with a perfect homogeneous radial distribution.
+While writing my C# code for a rendering tool using Directx, I had the need to reduce the size of the normal vectors. I realized that the size of the data to be sent to the GPU and/or the file storage for a simple mesh geometry, increased excessively as the number of vertices increased.
 
-### Coordinate system
-At first it's necessary to define a reference system used for example in directx11: left handles coordinate system. The method can be used for any reference system.
-
-![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/coord.jpg)
-
-This function converts a unit vector to polar coordinates.
-```c#
-static (float theta, float phi) spherical(Vector3f cartesian);
-```
-
-# Introduction
-While writing my C# code for a rendering tool using Directx library, I had the need to reduce the size of the normal vectors. I realized that the size of the data to be sent to the GPU and/or the file storage for a simple mesh geometry, increased excessively as the number of vertices increased.
-
-The Normal is often used in 3D graphic to determine a surface's orientation, it consists of a 3xfloat vector with unit length so the values of x y z are in the [-1.0, 1.0] range.
+The Normal is often used in 3D graphic to determine a surface's orientation, it consists of a 3xfloat vector with unit length so the values of x y z are in the {-1,1} range.
 
 Googling I found several methods but the one that seemed most effective to me is a spherical distribution of the vectors as described in this article:
 
-Encoding normal vectors using optimized spherical coordinates - J. Smith, G. Petrova, S. Schaefer
+https://web.archive.org/web/20250819071608mp_/https://www.sciencedirect.com/science/article/abs/pii/S0097849312000568
+
 I'll leave the article reading for any further information.
 
-Polar Coordinates in Directx Coordinate System
-Since the aim is to use the Directx library, it is necessary to define some basic math for left-handed coordinate system.
+### Polar Coordinates in Directx Coordinate System
 
+Since the aim is to use the Directx, it is necessary to define some basic math for left-handed coordinate system.
 
 
 C#
@@ -43,6 +29,7 @@ public struct Vector3f
       return length;
    }
 }
+
 Convert a polar vector to unit vector and vice-versa. In the cartesian to spherical, we must consider that we work only with normal vectors and we must be sure that there are no divisions by zero.
 
 C#
@@ -74,7 +61,7 @@ ushort value = 0;
 if (normal.x < 0) { value |= 1 << 15; normal.x *= -1; }
 if (normal.y < 0) { value |= 1 << 14; normal.y *= -1; }
 if (normal.z < 0) { value |= 1 << 13; normal.z *= -1; }
-In this way, the phi and theta angles lies in [0, π/2] range. To quantize the angles, you can simply select a subdivision of your choice, for example, for N subdivisions, we would get:
+In this way, the phi and theta angles lies in [0,π/2] range. To quantize the angles, you can simply select a subdivision of your choice, for example, for N subdivisions, we would get:
 
 C#
 d_phi = π/2 / N
@@ -111,7 +98,6 @@ With N=126 subdivision for both i and j, the table generates 8128 points, and lu
 
 Encoding
 C#
-Shrink ▲
 static int sum(int i) => (i + 1) * i / 2;
 
 public static ushort Encode(Vector3f normal)
@@ -136,7 +122,8 @@ public static ushort Encode(Vector3f normal)
 
    return value;
 }
-Decoding
+
+### Decoding
 To reverse the calculation, we first need to get the i and j indices back from the 13bit value. We can use two methods:
 
 Using the precalculated table but require to store a byte[8128] table:
@@ -144,8 +131,8 @@ C#
 int i = i_tab[value];
 int j = value - sum(i);
 Using the inverse function. These formulas can be used for example in a HLSL Shader code. Currently, the sqrt function doesn't impact performance at all (comparing to older graphics architectures). However, they must be checked for each value because it is possible that the precision of the floats can give different values.
+
 C#
-Shrink ▲
 static void inverse(int n, out int i, out int j)
 {
    //check for n[0,8127]
@@ -172,7 +159,8 @@ static void inverse_aprox2(int n, out int i, out int j)
    j = n - sum(i);
    if (j < 0) { j += i; i--; }
 }
-HLSL shader code
+
+### HLSL shader code
 tested with directx11, but I don't know now to measure the performance
 
 C++
@@ -193,7 +181,8 @@ float3 DecodeUnitVector16(min16uint encode)
     
     return normal;
 }
-Result
+
+### Result
 If we create all possible values with this code, we obtain a dense and homogeneous distribution of unit vectors, for a total of 65.024 possible points, as shown in the image.
 
 C#
@@ -207,16 +196,15 @@ Any comments or suggestions to improve the code are welcome.
 
 
 
-Extension to 24bit
+### Extension to 24bit
 In the source code, I added the 24bit extension, which N=2046 generates 2.096.128 points for one quarter of sphere, so a total of 16.769.024 possible normals.
 
 The extension to 32bit doesn't make sense also because I encounter memory overflow errors.
 
-Performance
+### Performance
 The bottleneck is due to the trigonometric functions. A doubling of the speed is obtained by replacing the standard functions with approximations (which are under testing):
 
 C#
-Shrink ▲
 /// <summary>
 /// Bhāskara I's sin
 /// </summary>
