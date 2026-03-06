@@ -104,7 +104,7 @@ with **i** and **j** in **{0,N}** range
 However, as written in the article, we would get a high density towards the Y pole. To improve the homogeneity, I chose to vary the theta angle respect to phi. Considering that for phi=0 there is a division by zero, but any angle of theta is admissible, can be written:
 
 ```c#
-theta = i > 0 ? (pi*j)/(2*i) : 0;
+theta = i > 0 ? (π*j)/(2*i) : 0;
 ```
 
 Now the problem is to store these two indices i and j in a 13-bit number, because 3-bit are reserved for the sign.
