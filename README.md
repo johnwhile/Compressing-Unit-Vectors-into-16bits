@@ -102,8 +102,9 @@ for (byte i = 0; i <= N; i++)
         i_tab[n++] = i;
 ```
 
-
 We have a simple sequence, see also https://en.wikipedia.org/wiki/Triangular_number.
+
+![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/table.jpg)
 
 Using the formula n = (i+3)*i/2 ( or n=(i+1)*i/2+i ), we can calculate the maximum number of points on the quarter sphere used to quantize the normal vectors.
 
@@ -213,14 +214,12 @@ for (int sign = 0; sign < 8; sign++)
         Vertices.Add(Decode((ushort)code));
     }
 ```
+![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/spherepoints.png)
 
 Any comments or suggestions to improve the code are welcome.
 
-
-
 ### Extension to 24bit
 In the source code, I added the 24bit extension, which N=2046 generates 2.096.128 points for one quarter of sphere, so a total of 16.769.024 possible normals.
-
 The extension to 32bit doesn't make sense also because I encounter memory overflow errors.
 
 ### Performance
