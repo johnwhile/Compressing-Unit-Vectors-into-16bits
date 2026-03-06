@@ -10,6 +10,9 @@ I'll leave the article reading for any further information.
 
 Since the aim is to use the Directx, it is necessary to define some basic math for left-handed coordinate system.
 
+<details>
+<summary>VECTOR3F</summary>
+
 ```C#
 public struct Vector3f
 {
@@ -25,10 +28,14 @@ public struct Vector3f
    }
 }
 ```
-
+</details>
+   
 Convert a polar vector to unit vector and vice-versa.
 
 ![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/coord.jpg)
+
+<details>
+<summary>SPHERICAL -> CARTESIAN</summary>
 
 ```C#
 public static Vector3f SphericalToCartesian(float r, float theta, float phi)
@@ -38,7 +45,13 @@ public static Vector3f SphericalToCartesian(float r, float theta, float phi)
      r * Math.Cos(phi),
      r * Math.Sin(theta) * Math.Sin(phi));
 }
+```
 
+</details>
+<details>
+<summary>CARTESIAN -> SPHERICAL </summary>
+   
+```C#
 public static (float r, float theta, float phi) CartesianToSpherical(Vector3f cartesian)
 {
    float r = cartesian.Normalize();
@@ -47,6 +60,8 @@ public static (float r, float theta, float phi) CartesianToSpherical(Vector3f ca
    return (r, theta, phi);
 }
 ```
+
+</details>
 
 ### Unit Vector Quantization
 To reduce the complexity, I simplify the problem for positive cartesian coords only, storing the sign in the first 3 bits.
