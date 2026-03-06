@@ -1,6 +1,6 @@
 # 16-Bit Unit Vector Compression using Discrete Spherical Coordinates (DSC).
 
-While writing my C# code for a rendering tool using Directx, I had the need to reduce the size of the normal vectors. I realized that the size of the data to be sent to the GPU and/or the file storage for a simple mesh geometry, increased excessively as the number of vertices increased.
+While writing my C# code for a rendering tool using Directx, I realized that the size of the data to be sent to the GPU and/or the file storage for a simple mesh geometry, increased excessively as the number of vertices increased.
 The Normal is often used in 3D graphic to determine a surface's orientation, it consists of a 3xfloat vector with unit length so the values of x y z are in the {-1,1} range.
 Googling I found several methods but the one that seemed most effective to me is a spherical distribution of the vectors as described in this article:
 https://web.archive.org/web/20250819071608mp_/https://www.sciencedirect.com/science/article/abs/pii/S0097849312000568
@@ -26,8 +26,7 @@ public struct Vector3f
 }
 ```
 
-Convert a polar vector to unit vector and vice-versa. In the cartesian to spherical, we must consider that we work only with normal vectors and we must be sure that there are no divisions by zero.
-
+Convert a polar vector to unit vector and vice-versa.
 ![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/coord.jpg)
 
 ```C#
@@ -49,7 +48,7 @@ public static (float r, float theta, float phi) CartesianToSpherical(Vector3f ca
 ```
 
 ### Unit Vector Quantization
-To reduce the complexity, I decided to simplify the problem for positive Cartesian coordinates only, storing the sign of the normal in the first 3 bits (we are working in little endian).
+To reduce the complexity, I simplify the problem for positive cartesian coords only, storing the sign in the first 3 bits.
 
 ```C#
 ushort value = 0;
@@ -58,23 +57,23 @@ if (normal.y < 0) { value |= 1 << 14; normal.y *= -1; }
 if (normal.z < 0) { value |= 1 << 13; normal.z *= -1; }
 ```
 
-In this way, the phi and theta angles lies in [0,π/2] range. To quantize the angles, you can simply select a subdivision of your choice, for example, for N subdivisions, we would get:
+In this way, the phi and theta angles lies in **{0,π/2}** range. To quantize the angles, you can simply select a subdivision of your choice:
 
 ```
 d_phi = π/2 / N
 d_theta = π/2 / N
 ```
 
-so the angles can be represented by an index i and j where:
+so the angles can be represented by an index **i** and **j** where:
 
 ```
 phi = d_phi * i
 theta = d_theta * j
 ```
 
-with i and j in [0,N] range
+with **i** and **j** in **{0,N}** range
 
-However, as written in the article, we will obtain a high density towards the Y pole. To improve the homogeneity of the distribution of the quantized vectors, I have chosen to vary the theta angle respect to phi. Considering that for phi=0, we have a division by zero, but any angle of theta is admissible, we will write:
+However, as written in the article, we would get a high density towards the Y pole. To improve the homogeneity, I chose to vary the theta angle respect to phi. Considering that for phi=0 there is a division by zero, but any angle of theta is admissible, can be written:
 
 ```
 float phi = i * d_phi;
@@ -84,7 +83,7 @@ float theta = i > 0 ? (j/i * π/2) : 0;
 Now the problem is to store these two indices i and j in a 13-bit number, because 3-bit are reserved for the sign.
 
 ### Table [i,j]
-If we construct a table with rows i, columns j and a progressive number for this sequence:
+If a table is built with rows i, columns j and a progressive number for this sequence:
 
 ```C#
 int n = 0;
@@ -93,12 +92,12 @@ for (byte i = 0; i <= N; i++)
         i_tab[n++] = i;
 ```
 
-We have a simple sequence, see also https://en.wikipedia.org/wiki/Triangular_number.
+we would get a simple sequence, see also https://en.wikipedia.org/wiki/Triangular_number.
 
 ![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/table.jpg)
 
 Using the formula n = (i+3)*i/2 ( or n=(i+1)*i/2+i ), we can calculate the maximum number of points on the quarter sphere used to quantize the normal vectors.
-With N=126 subdivision for both i and j, the table generates 8128 points, and luckily with a 13bit number, we can encode a number from 0 to 8191.
+With N=126 subdivision for both i and j, the table generates 8128 points, and luckily with a 13bit number, a number from 0 to 8191 can be encoded.
 
 ### Encoding
 
