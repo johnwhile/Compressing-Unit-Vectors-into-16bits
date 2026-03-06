@@ -1,13 +1,9 @@
 # 16-Bit Unit Vector Compression using Discrete Spherical Coordinates (DSC).
 
 While writing my C# code for a rendering tool using Directx, I had the need to reduce the size of the normal vectors. I realized that the size of the data to be sent to the GPU and/or the file storage for a simple mesh geometry, increased excessively as the number of vertices increased.
-
 The Normal is often used in 3D graphic to determine a surface's orientation, it consists of a 3xfloat vector with unit length so the values of x y z are in the {-1,1} range.
-
 Googling I found several methods but the one that seemed most effective to me is a spherical distribution of the vectors as described in this article:
-
 https://web.archive.org/web/20250819071608mp_/https://www.sciencedirect.com/science/article/abs/pii/S0097849312000568
-
 I'll leave the article reading for any further information.
 
 ### Polar Coordinates in Directx Coordinate System
