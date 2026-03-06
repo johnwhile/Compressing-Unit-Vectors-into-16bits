@@ -27,6 +27,7 @@ public struct Vector3f
 ```
 
 Convert a polar vector to unit vector and vice-versa.
+
 ![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/coord.jpg)
 
 ```C#
