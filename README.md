@@ -103,9 +103,6 @@ with **i** and **j** in **{0,N}** range
 However, as written in the article, we would get a high density towards the Y pole. To improve the homogeneity, I chose to vary the theta angle respect to phi. Considering that for phi=0 there is a division by zero, but any angle of theta is admissible, can be written:
 
 ```math
-\phi = i * \Delta\phi;
-```
-```math
 \theta = i > 0 ? (j/i * \pi/2) : 0;
 ```
 
