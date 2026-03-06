@@ -95,6 +95,20 @@ for (byte i = 0; i <= N; i++)
 
 we would get a simple sequence, see also https://en.wikipedia.org/wiki/Triangular_number.
 
+|   n   |   j0  |   j1  |  j2   |   j3  |  j4   |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+|   n   |   j0  |   j1  |  j2   |   j3  |  j4   |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+|   n   |   j0  |   j1  |  j2   |   j3  |  j4   |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+|   n   |   j0  |   j1  |  j2   |   j3  |  j4   |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+|   n   |   j0  |   j1  |  j2   |   j3  |  j4   |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+|   n   |   j0  |   j1  |  j2   |   j3  |  j4   |
+
+
+
 ![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/table.jpg)
 
 Using the formula n = (i+3)*i/2 ( or n=(i+1)*i/2+i ), we can calculate the maximum number of points on the quarter sphere used to quantize the normal vectors.
