@@ -1,4 +1,4 @@
-# 16-Bit Spherical Coordinate Compression Methods using Discrete Spherical Coordinates (DSC).
+# 16-Bit Unit Vector Compression using Discrete Spherical Coordinates (DSC).
 
 While writing my C# code for a rendering tool using Directx, I had the need to reduce the size of the normal vectors. I realized that the size of the data to be sent to the GPU and/or the file storage for a simple mesh geometry, increased excessively as the number of vertices increased.
 
@@ -99,6 +99,7 @@ for (byte i = 0; i <= N; i++)
     for (int j = 0; j <= i; j++)
         i_tab[n++] = i;
 ```
+
 
 We have a simple sequence, see also https://en.wikipedia.org/wiki/Triangular_number.
 
