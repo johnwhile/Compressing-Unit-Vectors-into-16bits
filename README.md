@@ -60,15 +60,15 @@ if (normal.z < 0) { value |= 1 << 13; normal.z *= -1; }
 
 In this way, the phi and theta angles lies in [0,π/2] range. To quantize the angles, you can simply select a subdivision of your choice, for example, for N subdivisions, we would get:
 
-```C#
+```
 d_phi = π/2 / N
 d_theta = π/2 / N
 ```
 
 so the angles can be represented by an index i and j where:
 
-```C#
-phi = d_phi * i 
+```
+phi = d_phi * i
 theta = d_theta * j
 ```
 
@@ -76,7 +76,7 @@ with i and j in [0,N] range
 
 However, as written in the article, we will obtain a high density towards the Y pole. To improve the homogeneity of the distribution of the quantized vectors, I have chosen to vary the theta angle respect to phi. Considering that for phi=0, we have a division by zero, but any angle of theta is admissible, we will write:
 
-```C#
+```
 float phi = i * d_phi;
 float theta = i > 0 ? (j/i * π/2) : 0;
 ```
@@ -203,7 +203,7 @@ for (int sign = 0; sign < 8; sign++)
         Vertices.Add(Decode((ushort)code));
     }
 ```
-![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/spherepoints.png)
+![App Screenshot](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/spherepoints.png)
 
 Any comments or suggestions to improve the code are welcome.
 
