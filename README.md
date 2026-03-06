@@ -68,7 +68,8 @@ To reduce the complexity, I simplify the problem for positive cartesian coords o
 
 <details>
 <summary>3BITS SIGN</summary>
-   
+
+
 ```C#
 ushort value = 0;
 if (normal.x < 0) { value |= 1 << 15; normal.x *= -1; }
@@ -102,8 +103,8 @@ with **i** and **j** in **{0,N}** range
 
 However, as written in the article, we would get a high density towards the Y pole. To improve the homogeneity, I chose to vary the theta angle respect to phi. Considering that for phi=0 there is a division by zero, but any angle of theta is admissible, can be written:
 
-```math
-\theta = i > 0 ? (j/i * \pi/2) : 0;
+```c#
+theta = i > 0 ? (pi*j)/(2*i) : 0;
 ```
 
 Now the problem is to store these two indices i and j in a 13-bit number, because 3-bit are reserved for the sign.
