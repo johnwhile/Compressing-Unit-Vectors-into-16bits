@@ -80,25 +80,33 @@ if (normal.z < 0) { value |= 1 << 13; normal.z *= -1; }
 
 In this way, the phi and theta angles lies in **{0,π/2}** range. To quantize the angles, you can simply select a subdivision of your choice:
 
+
+```math
+\Delta\phi = \pi*N/2
 ```
-d_phi = π/2 / N
-d_theta = π/2 / N
+```math
+\Delta\theta = \pi*N/2
 ```
 
 so the angles can be represented by an index **i** and **j** where:
 
+```math
+\phi = \Delta\phi * i
 ```
-phi = d_phi * i
-theta = d_theta * j
+```math
+\theta = \Delta\theta * j
 ```
+
 
 with **i** and **j** in **{0,N}** range
 
 However, as written in the article, we would get a high density towards the Y pole. To improve the homogeneity, I chose to vary the theta angle respect to phi. Considering that for phi=0 there is a division by zero, but any angle of theta is admissible, can be written:
 
+```math
+\phi = i * \Delta\phi;
 ```
-float phi = i * d_phi;
-float theta = i > 0 ? (j/i * π/2) : 0;
+```math
+\theta = i > 0 ? (j/i * \pi/2) : 0;
 ```
 
 Now the problem is to store these two indices i and j in a 13-bit number, because 3-bit are reserved for the sign.
