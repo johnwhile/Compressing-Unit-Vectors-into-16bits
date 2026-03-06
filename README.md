@@ -66,12 +66,17 @@ public static (float r, float theta, float phi) CartesianToSpherical(Vector3f ca
 ### Unit Vector Quantization
 To reduce the complexity, I simplify the problem for positive cartesian coords only, storing the sign in the first 3 bits.
 
+<details>
+<summary>3BITS SIGN</summary>
+   
 ```C#
 ushort value = 0;
 if (normal.x < 0) { value |= 1 << 15; normal.x *= -1; }
 if (normal.y < 0) { value |= 1 << 14; normal.y *= -1; }
 if (normal.z < 0) { value |= 1 << 13; normal.z *= -1; }
 ```
+
+</details>
 
 In this way, the phi and theta angles lies in **{0,π/2}** range. To quantize the angles, you can simply select a subdivision of your choice:
 
@@ -123,6 +128,9 @@ With N=126 subdivision for both i and j, the table generates 8128 points, and lu
 
 ### Encoding
 
+<details>
+<summary>ENCODING</summary>
+   
 ```C#
 static int sum(int i) => (i + 1) * i / 2;
 
@@ -150,6 +158,8 @@ public static ushort Encode(Vector3f normal)
 }
 ```
 
+</details>
+
 ### Decoding
 To reverse the calculation, we first need to get the i and j indices back from the 13bit value. We can use two methods:
 Using the precalculated table but require to store a byte[8128] table:
@@ -161,6 +171,9 @@ int j = value - sum(i);
 
 Using the inverse function. These formulas can be used for example in a HLSL Shader code. Currently, the sqrt function doesn't impact performance at all (comparing to older graphics architectures). However, they must be checked for each value because it is possible that the precision of the floats can give different values.
 
+<details>
+<summary>DECODING</summary>
+   
 ```C#
 static void inverse(int n, out int i, out int j)
 {
@@ -190,9 +203,14 @@ static void inverse_aprox2(int n, out int i, out int j)
 }
 ```
 
+</details>
+
 ### HLSL shader code
 tested with directx11, but I don't know now to measure the performance
 
+<details>
+<summary>HLSL SHADER</summary>
+   
 ```C++
 float3 DecodeUnitVector16(min16uint encode)
 {
@@ -212,6 +230,8 @@ float3 DecodeUnitVector16(min16uint encode)
     return normal;
 }
 ```
+
+</details>
 
 ### Result
 If we create all possible values with this code, we obtain a dense and homogeneous distribution of unit vectors, for a total of 65.024 possible points, as shown in the image.
@@ -236,7 +256,7 @@ The extension to 32bit doesn't make sense also because I encounter memory overfl
 The bottleneck is due to the trigonometric functions. A doubling of the speed is obtained by replacing the standard functions with approximations (which are under testing):
 
 <details>
-<summary>approximated trigonometric functions</summary>
+<summary>APPROXIMATED TRIGONOMETRICS FN</summary>
    
 ```C#
 /// <summary>
