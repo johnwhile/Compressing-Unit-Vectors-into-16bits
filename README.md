@@ -45,13 +45,8 @@ public static Vector3f SphericalToCartesian(float r, float theta, float phi)
 
 public static (float r, float theta, float phi) CartesianToSpherical(Vector3f cartesian)
 {
-   //now x, y, z are divided by r
    float r = cartesian.Normalize();
-            
-   //work for vector -z
    float theta = (float)Math.Atan2(cartesian.z, cartesian.x); 
-   //float theta = (float)Math.Atan(cartesian.z /cartesian.x);
-
    float phi = (float)Math.Acos(cartesian.y);
    return (r, theta, phi);
 }
@@ -107,7 +102,6 @@ We have a simple sequence, see also https://en.wikipedia.org/wiki/Triangular_num
 ![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/table.jpg)
 
 Using the formula n = (i+3)*i/2 ( or n=(i+1)*i/2+i ), we can calculate the maximum number of points on the quarter sphere used to quantize the normal vectors.
-
 With N=126 subdivision for both i and j, the table generates 8128 points, and luckily with a 13bit number, we can encode a number from 0 to 8191.
 
 ### Encoding
@@ -141,7 +135,6 @@ public static ushort Encode(Vector3f normal)
 
 ### Decoding
 To reverse the calculation, we first need to get the i and j indices back from the 13bit value. We can use two methods:
-
 Using the precalculated table but require to store a byte[8128] table:
 
 ```C#
