@@ -32,6 +32,8 @@ public struct Vector3f
 
 Convert a polar vector to unit vector and vice-versa. In the cartesian to spherical, we must consider that we work only with normal vectors and we must be sure that there are no divisions by zero.
 
+![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/coord.jpg)
+
 ```C#
 public static Vector3f SphericalToCartesian(float r, float theta, float phi)
 {
