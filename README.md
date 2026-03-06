@@ -220,6 +220,8 @@ The extension to 32bit doesn't make sense also because I encounter memory overfl
 ### Performance
 The bottleneck is due to the trigonometric functions. A doubling of the speed is obtained by replacing the standard functions with approximations (which are under testing):
 
+<details>
+<summary>approximated trigonometric functions</summary>
 ```C#
 /// <summary>
 /// Bhāskara I's sin
@@ -254,3 +256,4 @@ static float AcosSL(float x)
     return x < 0 ? z + Mathelp.PI : -z;
 }
 ```
+</details>
