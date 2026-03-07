@@ -131,10 +131,7 @@ for (byte i = 0; i <= N; i++)
 |   i3  |   6   |   7   |  8    |   9   |   -   |
 |   i4  |   10  |   11  |  12   |   13  |  14   |
 
-Using the formula 
-$n = (i+3)*i/2 $ or <br/> 
-$n=(i+1)*i/2+i$
-we can calculate the maximum number of points on the quarter sphere used to quantize the normal vectors.
+Using the formula: $`\quad N = (i+3) * i/2 \quad `$ we can calculate the maximum number of points on the quarter sphere used to quantize the normal vectors.
 With N=126 subdivision for both i and j, the table generates 8128 points, and luckily with a 13bit number, a number from 0 to 8191 can be encoded.
 
 >[!TIP]
