@@ -9,7 +9,7 @@ Googling I found several methods but the one that seemed most effective to me is
 
 I'll leave the article reading for any further information.
 
-### Polar Coordinates in Directx Coordinate System
+## Polar Coordinates in Directx Coordinate System
 
 Since the aim is to use the Directx, it is necessary to define some basic math for left-handed coordinate system.
 
@@ -66,7 +66,7 @@ public static (float r, float theta, float phi) CartesianToSpherical(Vector3f ca
 
 </details>
 
-### Unit Vector Quantization
+## Unit Vector Quantization
 To reduce the complexity, I simplify the problem for positive cartesian coords only, storing the sign in the first 3 bits.
 
 <details>
@@ -103,7 +103,7 @@ Considering that for **&phi;=0** there is a division by zero, but any angle of *
 float theta = i > 0 ? (π*j)/(2*i) : 0;
 ```
 
-### Table [i,j]
+## Table [i,j]
 
 Now the problem is to store these two indices i and j in a 13-bit number, because 3-bit are reserved for the sign.
 If a table is built with rows i, columns j and a progressive number for this sequence:
@@ -129,7 +129,7 @@ With N=126 subdivision for both i and j, the table generates 8128 points, and lu
 >[!TIP]
 >we would get a simple sequence, see also https://en.wikipedia.org/wiki/Triangular_number.
 
-### Encoding
+## Encoding
 
 <details>
 <summary>ENCODING</summary>
@@ -163,7 +163,7 @@ public static ushort Encode(Vector3f normal)
 
 </details>
 
-### Decoding
+## Decoding
 To reverse the calculation, we first need to get the i and j indices back from the 13bit value. We can use two methods:
 Using the precalculated table but require to store a byte[8128] table:
 
@@ -208,7 +208,7 @@ static void inverse_aprox2(int n, out int i, out int j)
 
 </details>
 
-### HLSL shader code
+## HLSL shader code
 tested with directx11, but I don't know now to measure the performance
 
 <details>
@@ -236,7 +236,7 @@ float3 DecodeUnitVector16(min16uint encode)
 
 </details>
 
-### Result
+## Result
 If we create all possible values with this code, we obtain a dense and homogeneous distribution of unit vectors, for a total of 65.024 possible points, as shown in the image.
 
 ```C#
@@ -251,11 +251,11 @@ for (int sign = 0; sign < 8; sign++)
 
 Any comments or suggestions to improve the code are welcome.
 
-### Extension to 24bit
+## Extension to 24bit
 In the source code, I added the 24bit extension, which N=2046 generates 2.096.128 points for one quarter of sphere, so a total of 16.769.024 possible normals.
 The extension to 32bit doesn't make sense also because I encounter memory overflow errors.
 
-### Performance
+## Performance
 The bottleneck is due to the trigonometric functions. A doubling of the speed is obtained by replacing the standard functions with approximations (which are under testing):
 
 <details>
