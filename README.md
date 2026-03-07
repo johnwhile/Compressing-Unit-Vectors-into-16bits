@@ -95,25 +95,17 @@ with **i** and **j** in **\[0, N]** range
 
 However, as written in the article, we would get a high density towards the **Y pole**. To improve the homogeneity, I chose to vary the **&theta;** angle respect to **&phi;**.</br>
 
-```math
-j = \{0,\dotsc,i\}
-```
+$`j = \{0,\dotsc,i\}`$
 
 Considering that for **&phi;=0** there is a division by zero, but any angle of **&theta;** is admissible, can be written:
 
 ```c#
-theta = i > 0 ? (π*j)/(2*i) : 0;
+float theta = i > 0 ? (π*j)/(2*i) : 0;
 ```
-So, for example, if the first quantized angle **i1** exist **j0** and **j1**
-
-$i = 1$<br/>
-$\phi = d\phi$<br/>
-$j = [0,1]$<br/>
-$\theta = [0, \pi/2]$<br/>
-
-Now the problem is to store these two indices i and j in a 13-bit number, because 3-bit are reserved for the sign.
 
 ### Table [i,j]
+
+Now the problem is to store these two indices i and j in a 13-bit number, because 3-bit are reserved for the sign.
 If a table is built with rows i, columns j and a progressive number for this sequence:
 
 ```C#
