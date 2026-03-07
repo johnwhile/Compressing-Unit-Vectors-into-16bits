@@ -12,6 +12,7 @@ I'll leave the article reading for any further information.
 ## Polar Coordinates in Directx Coordinate System
 
 Since the aim is to use the Directx, it is necessary to define some basic math for left-handed coordinate system.
+![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/coord.jpg)
 
 <details>
 <summary>VECTOR3F</summary>
@@ -34,8 +35,6 @@ public struct Vector3f
 </details>
    
 Convert a polar vector to unit vector and vice-versa.
-
-![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/coord.jpg)
 
 <details>
 <summary>SPHERICAL -> CARTESIAN</summary>
