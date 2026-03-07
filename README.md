@@ -80,21 +80,13 @@ if (normal.z < 0) { value |= 1 << 13; normal.z *= -1; }
 
 In this way, the **&phi;** and **&theta;** angles lies in **\[0, &pi;/2]** range. To quantize the angles, you can simply select a subdivision of your choice:
 
-```math
-d\phi = \pi*N/2
-```
-```math
-d\theta = \pi*N/2
-```
+$d\phi = \pi / (2N)$<br/>
+$d\theta = \pi / (2N)$<br/>
 
 so the angles can be represented by an index **i** and **j** where:
 
-```math
-\phi = d\phi * i
-```
-```math
-\theta = d\theta * j
-```
+$\phi = d\phi * i$<br/>
+$\theta = d\theta * j$<br/>
 
 with **i** and **j** in **\[0, N]** range
 
@@ -109,20 +101,12 @@ Considering that for **&phi;=0** there is a division by zero, but any angle of *
 ```c#
 theta = i > 0 ? (π*j)/(2*i) : 0;
 ```
-So, for example, if the first quantized angle i=1 
+So, for example, if the first quantized angle **i1** exist **j0** and **j1**
 
-```math
-i = 1
-```
-```math
-\phi = d\phi
-```
-```math
-j = \{0,1}
-```
-```math
-\theta = \{0, \pi/2}
-```
+$i = 1$<br/>
+$\phi = d\phi$<br/>
+$j = [0,1]$<br/>
+$\theta = [0, \pi/2]$<br/>
 
 Now the problem is to store these two indices i and j in a 13-bit number, because 3-bit are reserved for the sign.
 
