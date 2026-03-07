@@ -1,7 +1,7 @@
 # 16-Bit Unit Vector Compression using Discrete Spherical Coordinates (DSC).
 
 While writing my C# code for a rendering tool using Directx, I realized that the size of the data to be sent to the GPU and/or the file storage for a simple mesh geometry, increased excessively as the number of vertices increased.
-The Normal is often used in 3D graphic to determine a surface's orientation, it consists of a 3xfloat vector with unit length so the values of x y z are in the {-1,1} range.
+The Normal is often used in 3D graphic to determine a surface's orientation, it consists of a 3xfloat vector with unit length so the values of x y z are in the \[-1, 1] range.
 Googling I found several methods but the one that seemed most effective to me is a spherical distribution of the vectors as described in this article:
 https://web.archive.org/web/20250819071608mp_/https://www.sciencedirect.com/science/article/abs/pii/S0097849312000568
 I'll leave the article reading for any further information.
@@ -69,7 +69,6 @@ To reduce the complexity, I simplify the problem for positive cartesian coords o
 <details>
 <summary>3BITS SIGN</summary>
 
-
 ```C#
 ushort value = 0;
 if (normal.x < 0) { value |= 1 << 15; normal.x *= -1; }
@@ -79,32 +78,50 @@ if (normal.z < 0) { value |= 1 << 13; normal.z *= -1; }
 
 </details>
 
-In this way, the phi and theta angles lies in **{0,π/2}** range. To quantize the angles, you can simply select a subdivision of your choice:
-
+In this way, the **&phi;** and **&theta;** angles lies in **\[0, &pi;/2]** range. To quantize the angles, you can simply select a subdivision of your choice:
 
 ```math
-\Delta\phi = \pi*N/2
+d\phi = \pi*N/2
 ```
 ```math
-\Delta\theta = \pi*N/2
+d\theta = \pi*N/2
 ```
 
 so the angles can be represented by an index **i** and **j** where:
 
 ```math
-\phi = \Delta\phi * i
+\phi = d\phi * i
 ```
 ```math
-\theta = \Delta\theta * j
+\theta = d\theta * j
 ```
 
+with **i** and **j** in **\[0, N]** range
 
-with **i** and **j** in **{0,N}** range
+However, as written in the article, we would get a high density towards the **Y pole**. To improve the homogeneity, I chose to vary the **&theta;** angle respect to **&phi;**.</br>
 
-However, as written in the article, we would get a high density towards the Y pole. To improve the homogeneity, I chose to vary the theta angle respect to phi. Considering that for phi=0 there is a division by zero, but any angle of theta is admissible, can be written:
+```math
+j = \{0,\dotsc,i\}
+```
+
+Considering that for **&phi;=0** there is a division by zero, but any angle of **&theta;** is admissible, can be written:
 
 ```c#
 theta = i > 0 ? (π*j)/(2*i) : 0;
+```
+So, for example, if the first quantized angle i=1 
+
+```math
+i = 1
+```
+```math
+\phi = d\phi
+```
+```math
+j = \{0,1}
+```
+```math
+\theta = \{0, \pi/2}
 ```
 
 Now the problem is to store these two indices i and j in a 13-bit number, because 3-bit are reserved for the sign.
