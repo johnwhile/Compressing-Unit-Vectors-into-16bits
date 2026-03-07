@@ -11,7 +11,7 @@ I'll leave the article reading for any further information.
 
 ## Polar Coordinates in Directx Coordinate System
 
-Since the aim is to use the Directx, it is necessary to define some basic math for left-handed coordinate system.
+Since the aim is to use the Directx, it is necessary to define some basic math for left-handed coordinate system.<br/>
 ![](https://github.com/johnwhile/Compressing-Unit-Vectors-into-16bits/blob/main/readme/coord.jpg)
 
 <details>
